@@ -28,14 +28,12 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView = findViewById(R.id.recycler_main);
         recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setItemViewCacheSize(30);
         String json = getJson("maps.json", MainActivity.this);
         ArrayList<Tiny> tinyList = new ArrayList<>();
         try {
             ArrayList<String> shoeData = JsonUtils.fromJson(json, new TypeToken<ArrayList<String>>() {
             }.getType());
-            Log.d("--", "----shoeData");
             for (String bet : shoeData) {
                 Tiny ti = new Tiny();
                 String[] p = bet.split(":");
@@ -50,6 +48,53 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
+        //initMap1(tinyList);
+
+        initMap2(tinyList);
+
+
+    }
+
+    private void initMap2(ArrayList<Tiny> tinyList) {
+        ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            ArrayList<Tiny2> tempList = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                Tiny2 tt = new Tiny2();
+                tt.setBet1("0");
+                tempList.add(tt);
+            }
+            list.add(tempList);
+        }
+
+
+        int lie = 0;
+        int hang = 0;
+        for (int i = 0; i < tinyList.size(); i++) {
+            if (i == 0) { //第0个，做特殊判断
+                if (tinyList.get(i).getBet1().equals("3")) {
+                    list.get(lie).get(hang).setHePre(true);
+                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount() + 1);
+                }
+            }else{
+
+                compareWithPre();
+                if (tinyList.get(i).getBet1().equals("1")) {
+                    list.get(lie).get(hang).setHePre(true);
+                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount() + 1);
+                }
+            }
+        }
+
+
+    }
+
+    private void compareWithPre() {
+
+    }
+
+    private void initMap1(ArrayList<Tiny> tinyList) {
         int listListSize;
         if (tinyList.size() % 6 == 0) {
             listListSize = tinyList.size() / 6;
