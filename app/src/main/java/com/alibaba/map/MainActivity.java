@@ -17,6 +17,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String NONE_VALUE = "0";
+    public static final String ZHUANG_YIN = "1";
+    public static final String XIAN_YIN = "2";
+    public static final String HE = "3";
     RecyclerView recyclerView;
     MainAdapter mainAdapter;
 
@@ -62,7 +66,10 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Tiny2> tempList = new ArrayList<>();
             for (int j = 0; j < 6; j++) {
                 Tiny2 tt = new Tiny2();
-                tt.setBet1("0");
+                tt.setBet1(NONE_VALUE);
+                tt.setHeAmount(0);
+                tt.setHePre(false);
+                tt.setHeAft(false);
                 tempList.add(tt);
             }
             list.add(tempList);
@@ -71,18 +78,59 @@ public class MainActivity extends AppCompatActivity {
 
         int lie = 0;
         int hang = 0;
+        int realHang = 0;
         for (int i = 0; i < tinyList.size(); i++) {
+            String bet1 = tinyList.get(i).getBet1();
             if (i == 0) { //第0个，做特殊判断
-                if (tinyList.get(i).getBet1().equals("3")) {
+                lie = 0;
+                hang = 0;
+                realHang = 0;
+                if (bet1.equals(HE)) {
                     list.get(lie).get(hang).setHePre(true);
                     list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount() + 1);
+                } else if (bet1.equals(ZHUANG_YIN)) {
+                    list.get(lie).get(hang).setBet1(bet1);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    list.get(lie).get(hang).setBet1(bet1);
                 }
-            }else{
+            } else {
+                Tiny2 pre = list.get(lie).get(hang);
+                if (bet1.equals(ZHUANG_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        if (lie < 5) {
+                            lie++;
+                        } else {
+                            hang++;
+                        }
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
 
-                compareWithPre();
-                if (tinyList.get(i).getBet1().equals("1")) {
-                    list.get(lie).get(hang).setHePre(true);
-                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount() + 1);
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(lie).get(hang).setBet1(ZHUANG_YIN);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        if (lie < 5) {
+                            lie++;
+                        } else {
+                            hang++;
+                        }
+
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(lie).get(hang).setBet1(XIAN_YIN);
+
+                } else if (bet1.equals(HE)) {
+                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount()+1);
+                    list.get(lie).get(hang).setHeAft(true);
                 }
             }
         }
@@ -90,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void compareWithPre() {
-
-    }
 
     private void initMap1(ArrayList<Tiny> tinyList) {
         int listListSize;
