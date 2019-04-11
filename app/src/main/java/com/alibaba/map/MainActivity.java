@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MainAdapter mainAdapter;
 
+    RecyclerView recyclerDalu;
+    DaluAdapter daluAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_main);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemViewCacheSize(30);
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerDalu = findViewById(R.id.recycler_dalu);
+        recyclerDalu.setLayoutManager(linearLayoutManager2);
+        recyclerDalu.setItemViewCacheSize(50);
+
         String json = getJson("maps.json", MainActivity.this);
         ArrayList<Tiny> tinyList = new ArrayList<>();
         try {
@@ -53,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //initMap1(tinyList);
+        initMap1(tinyList);
 
         initMap2(tinyList);
 
@@ -86,15 +95,15 @@ public class MainActivity extends AppCompatActivity {
                 hang = 0;
                 realHang = 0;
                 if (bet1.equals(HE)) {
-                    list.get(lie).get(hang).setHePre(true);
-                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount() + 1);
+                    list.get(hang).get(lie).setHePre(true);
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                 } else if (bet1.equals(ZHUANG_YIN)) {
-                    list.get(lie).get(hang).setBet1(bet1);
+                    list.get(hang).get(lie).setBet1(bet1);
                 } else if (bet1.equals(XIAN_YIN)) {
-                    list.get(lie).get(hang).setBet1(bet1);
+                    list.get(hang).get(lie).setBet1(bet1);
                 }
             } else {
-                Tiny2 pre = list.get(lie).get(hang);
+                Tiny2 pre = list.get(hang).get(lie);
                 if (bet1.equals(ZHUANG_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         if (lie < 5) {
@@ -110,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
                     }
-                    list.get(lie).get(hang).setBet1(ZHUANG_YIN);
+                    list.get(hang).get(lie).setBet1(ZHUANG_YIN);
                 } else if (bet1.equals(XIAN_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         lie = 0;
@@ -126,15 +135,16 @@ public class MainActivity extends AppCompatActivity {
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
                     }
-                    list.get(lie).get(hang).setBet1(XIAN_YIN);
+                    list.get(hang).get(lie).setBet1(XIAN_YIN);
 
                 } else if (bet1.equals(HE)) {
-                    list.get(lie).get(hang).setHeAmount(list.get(lie).get(hang).getHeAmount()+1);
-                    list.get(lie).get(hang).setHeAft(true);
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                    list.get(hang).get(lie).setHeAft(true);
                 }
             }
         }
-
+        daluAdapter = new DaluAdapter(MainActivity.this, list);
+        recyclerDalu.setAdapter(daluAdapter);
 
     }
 
