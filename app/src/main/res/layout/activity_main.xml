@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_main"
@@ -17,6 +14,53 @@
         android:id="@+id/recycler_dalu"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="190dp">
     </android.support.v7.widget.RecyclerView>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="清除"
+            android:onClick="clear"/>
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="庄"
+            android:onClick="zhuang"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="闲"
+        android:onClick="xian"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="和"
+        android:onClick="he"/>
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="庄对"
+        android:onClick="zhuangdui"/>
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="闲对"
+        android:onClick="xiandui"/>
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:onClick="queding"
+            android:text="确定"/>
+    </LinearLayout>
+</RelativeLayout>

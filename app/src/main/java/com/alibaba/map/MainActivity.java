@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -27,9 +30,20 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerDalu;
     DaluAdapter daluAdapter;
 
+    private String bet1 = "1";
+    private String zhuangdui = "0";
+    private String xiandui = "1";
+
+    ArrayList<Tiny> tinyList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -43,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerDalu.setItemViewCacheSize(50);
 
         String json = getJson("maps.json", MainActivity.this);
-        ArrayList<Tiny> tinyList = new ArrayList<>();
+
         try {
             ArrayList<String> shoeData = JsonUtils.fromJson(json, new TypeToken<ArrayList<String>>() {
             }.getType());
@@ -62,14 +76,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        initMap1(tinyList);
+        initMap1();
 
-        initMap2(tinyList);
+        initMap2();
 
 
     }
 
-    private void initMap2(ArrayList<Tiny> tinyList) {
+    private void initMap2() {
+        boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
         ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             ArrayList<Tiny2> tempList = new ArrayList<>();
@@ -107,14 +122,27 @@ public class MainActivity extends AppCompatActivity {
                 if (bet1.equals(ZHUANG_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         if (lie < 5) {
-                            lie++;
+                            if (list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
                         } else {
                             hang++;
+                            tongSeshuxiang = false;
                         }
                     } else if (pre.getBet1().equals(XIAN_YIN)) {
                         lie = 0;
                         realHang++;
                         hang = realHang;
+                        tongSeshuxiang = true;
 
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
@@ -125,11 +153,25 @@ public class MainActivity extends AppCompatActivity {
                         lie = 0;
                         realHang++;
                         hang = realHang;
+                        tongSeshuxiang = true;
                     } else if (pre.getBet1().equals(XIAN_YIN)) {
                         if (lie < 5) {
-                            lie++;
+                            if (list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
                         } else {
                             hang++;
+                            tongSeshuxiang = false;
                         }
 
                     } else if (pre.getBet1().equals(HE)) {
@@ -145,11 +187,14 @@ public class MainActivity extends AppCompatActivity {
         }
         daluAdapter = new DaluAdapter(MainActivity.this, list);
         recyclerDalu.setAdapter(daluAdapter);
+        if (hang > 13) {
+            recyclerDalu.smoothScrollToPosition(hang - 5);
+        }
 
     }
 
 
-    private void initMap1(ArrayList<Tiny> tinyList) {
+    private void initMap1() {
         int listListSize;
         if (tinyList.size() % 6 == 0) {
             listListSize = tinyList.size() / 6;
@@ -193,4 +238,55 @@ public class MainActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
+
+    public void clear(View view) {
+        tinyList.clear();
+        refreshAllList();
+    }
+
+    public void zhuang(View view) {
+        bet1 = "1";
+    }
+
+    public void xian(View view) {
+        bet1 = "2";
+    }
+
+    public void he(View view) {
+        bet1 = "3";
+    }
+
+    public void zhuangdui(View view) {
+        if (zhuangdui.equals("0")) {
+            zhuangdui = "1";
+        } else {
+            zhuangdui = "0";
+        }
+
+    }
+
+    public void xiandui(View view) {
+        if (xiandui.equals("0")) {
+            xiandui = "1";
+        } else {
+            xiandui = "0";
+        }
+    }
+
+    public void queding(View view) {
+        Tiny tiny = new Tiny();
+        tiny.setBet1(bet1);
+        tiny.setBet2(zhuangdui);
+        tiny.setBet3(xiandui);
+        tinyList.add(tiny);
+        refreshAllList();
+    }
+
+    private void refreshAllList() {
+        initMap1();
+        initMap2();
+
+    }
+
+
 }
