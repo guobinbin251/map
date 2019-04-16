@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMap2() {
+
+        Log.d("Map","--start------"+System.currentTimeMillis());
         boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
         ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
         ArrayList<ArrayList<Tiny2>> sourceList = new ArrayList<>(); //给下三路做数据源用
@@ -252,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
         initXiaolu(sourceList);
 
         initXiaoqiang(sourceList);
+
+        Log.d("Map","--end------"+System.currentTimeMillis());
     }
 
 
