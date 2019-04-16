@@ -30,6 +30,15 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerDalu;
     DaluAdapter daluAdapter;
 
+    RecyclerView recyclerDayanzai;
+    DayanzaiAdapter dayanzaiAdapter;
+
+    RecyclerView recyclerXiaolu;
+    XiaoluAdapter xiaoluAdapter;
+
+    RecyclerView recyclerXiaoqiang;
+    XiaoqiangAdapter xiaoqiangAdapter;
+
     private String bet1 = "1";
     private String zhuangdui = "0";
     private String xiandui = "1";
@@ -55,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
         recyclerDalu = findViewById(R.id.recycler_dalu);
         recyclerDalu.setLayoutManager(linearLayoutManager2);
         recyclerDalu.setItemViewCacheSize(50);
+
+        LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerDayanzai = findViewById(R.id.recycler_dayanzai);
+        recyclerDayanzai.setLayoutManager(linearLayoutManager3);
+        recyclerDayanzai.setItemViewCacheSize(50);
+
+        LinearLayoutManager linearLayoutManager4 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerXiaolu = findViewById(R.id.recycler_xiaolu);
+        recyclerXiaolu.setLayoutManager(linearLayoutManager4);
+        recyclerXiaolu.setItemViewCacheSize(50);
+
+        LinearLayoutManager linearLayoutManager5 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerXiaoqiang= findViewById(R.id.recycler_xiaoqianglu);
+        recyclerXiaoqiang.setLayoutManager(linearLayoutManager5);
+        recyclerXiaoqiang.setItemViewCacheSize(50);
 
         String json = getJson("maps.json", MainActivity.this);
 
@@ -86,6 +110,240 @@ public class MainActivity extends AppCompatActivity {
     private void initMap2() {
         boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
         ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
+        ArrayList<ArrayList<Tiny2>> sourceList = new ArrayList<>(); //给下三路做数据源用
+
+        for (int i = 0; i < 30; i++) {
+            ArrayList<Tiny2> tempList = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                Tiny2 tt = new Tiny2();
+                tt.setBet1(NONE_VALUE);
+                tt.setHeAmount(0);
+                tt.setHePre(false);
+                tt.setHeAft(false);
+                tempList.add(tt);
+            }
+            list.add(tempList);
+        }
+
+        for (int i = 0; i < 30; i++) {
+            ArrayList<Tiny2> tempList = new ArrayList<>();
+            for (int j = 0; j < 30; j++) {
+                Tiny2 tt = new Tiny2();
+                tt.setBet1(NONE_VALUE);
+                tt.setHeAmount(0);
+                tt.setHePre(false);
+                tt.setHeAft(false);
+                tempList.add(tt);
+            }
+            sourceList.add(tempList);
+        }
+
+        int lie = 0;
+        int hang = 0;
+        int realHang = 0;
+
+        int sourceLie = 0;
+        int sourceHang = 0;
+
+        for (int i = 0; i < tinyList.size(); i++) {
+            String bet1 = tinyList.get(i).getBet1();
+            if (i == 0) { //第0个，做特殊判断
+                lie = 0;
+                hang = 0;
+                realHang = 0;
+
+                sourceLie = 0;
+                sourceHang = 0;
+
+                if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHePre(true);
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                } else if (bet1.equals(ZHUANG_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                    sourceList.get(sourceHang).get(sourceLie).setBet1(bet1);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                    sourceList.get(sourceHang).get(sourceLie).setBet1(bet1);
+                }
+            } else {
+                Tiny2 pre = list.get(hang).get(lie);
+                if (bet1.equals(ZHUANG_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+                        sourceLie++;
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+
+                        sourceHang++;
+                        sourceLie = 0;
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                    sourceList.get(sourceHang).get(sourceLie).setBet1(ZHUANG_YIN);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+                        sourceHang++;
+                        sourceLie = 0;
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+
+                        sourceLie++;
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(XIAN_YIN);
+                    sourceList.get(sourceHang).get(sourceLie).setBet1(XIAN_YIN);
+                } else if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                    list.get(hang).get(lie).setHeAft(true);
+                }
+            }
+        }
+        daluAdapter = new DaluAdapter(MainActivity.this, list);
+        recyclerDalu.setAdapter(daluAdapter);
+        /*if (hang > 13) {
+            recyclerDalu.smoothScrollToPosition(hang - 5);
+        }
+        */
+
+        initDaYanZai(sourceList);
+
+        initXiaolu(sourceList);
+
+        initXiaoqiang(sourceList);
+    }
+
+
+    private void initMap1() {
+        int listListSize;
+        if (tinyList.size() % 6 == 0) {
+            listListSize = tinyList.size() / 6;
+        } else {
+            listListSize = tinyList.size() / 6 + 1;
+        }
+
+        ArrayList<ArrayList<Tiny>> list = new ArrayList<>();
+        for (int i = 0; i < listListSize; i++) {
+            ArrayList<Tiny> one = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                int index = i * 6 + j;
+                if (index < tinyList.size()) {
+                    Tiny ti = tinyList.get(i * 6 + j);
+
+                    one.add(ti);
+                }
+            }
+            list.add(one);
+        }
+
+        mainAdapter = new MainAdapter(MainActivity.this, list);
+        recyclerView.setAdapter(mainAdapter);
+    }
+
+
+    private void initDaYanZai(ArrayList<ArrayList<Tiny2>> sourceList) {
+        ArrayList<Tiny> dayanList = new ArrayList<>();
+
+
+        for (int i = 0; i < 30; i++) { // i表示行
+            for (int j = 0; j < 30; j++) { //j表示列
+                //第0列忽略不计
+                if (i > 0) {
+                    if (i == 1) {
+                        //说明二行二列有值，开始些大眼仔路
+                        if (j > 0) {
+                            if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                                Tiny tt = new Tiny();
+                                if (sourceList.get(i - 1).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 1).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                                dayanList.add(tt);
+                            }
+                        }
+
+                    } else {
+                        if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                            Tiny tt = new Tiny();
+                            if (j == 0) {
+                                //第一行，看前面两列的和对比
+                                if (getLieAmount(sourceList.get(i - 1)) == getLieAmount(sourceList.get(i - 2))) {
+                                    tt.setBet1(ZHUANG_YIN);
+                                } else {
+                                    tt.setBet1(XIAN_YIN);
+                                }
+                            } else {
+                                //非第一行，看有无和直落
+                                if (sourceList.get(i - 1).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 1).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                            }
+                            dayanList.add(tt);
+                        }
+                    }
+                }
+            }
+        }
+        //大眼数据准备完毕，接下来要和大路做同样的算法
+
+
+        boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
+        ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
+
         for (int i = 0; i < 30; i++) {
             ArrayList<Tiny2> tempList = new ArrayList<>();
             for (int j = 0; j < 6; j++) {
@@ -103,12 +361,15 @@ public class MainActivity extends AppCompatActivity {
         int lie = 0;
         int hang = 0;
         int realHang = 0;
-        for (int i = 0; i < tinyList.size(); i++) {
-            String bet1 = tinyList.get(i).getBet1();
+
+
+        for (int i = 0; i < dayanList.size(); i++) {
+            String bet1 = dayanList.get(i).getBet1();
             if (i == 0) { //第0个，做特殊判断
                 lie = 0;
                 hang = 0;
                 realHang = 0;
+
                 if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHePre(true);
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
@@ -143,7 +404,6 @@ public class MainActivity extends AppCompatActivity {
                         realHang++;
                         hang = realHang;
                         tongSeshuxiang = true;
-
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
                     }
@@ -173,51 +433,366 @@ public class MainActivity extends AppCompatActivity {
                             hang++;
                             tongSeshuxiang = false;
                         }
-
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(XIAN_YIN);
-
                 } else if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                     list.get(hang).get(lie).setHeAft(true);
                 }
             }
         }
-        daluAdapter = new DaluAdapter(MainActivity.this, list);
-        recyclerDalu.setAdapter(daluAdapter);
-        if (hang > 13) {
-            recyclerDalu.smoothScrollToPosition(hang - 5);
+
+        dayanzaiAdapter = new DayanzaiAdapter(MainActivity.this, list);
+        recyclerDayanzai.setAdapter(dayanzaiAdapter);
+
+
+    }
+
+    private void initXiaolu(ArrayList<ArrayList<Tiny2>> sourceList) {
+        ArrayList<Tiny> xiaoluList = new ArrayList<>();
+
+        for (int i = 0; i < 30; i++) { // i表示行
+            for (int j = 0; j < 30; j++) { //j表示列
+                //第0和1列忽略不计
+                if (i > 1) {
+                    if (i == 2) {
+                        //说明三行二列有值，开始些大眼仔路
+                        if (j > 0) {
+                            if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                                Tiny tt = new Tiny();
+                                if (sourceList.get(i - 2).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 2).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                                xiaoluList.add(tt);
+                            }
+                        }
+
+                    } else {
+                        if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                            Tiny tt = new Tiny();
+                            if (j == 0) {
+                                //第一行，看前面两列的和对比
+                                if (getLieAmount(sourceList.get(i - 1)) == getLieAmount(sourceList.get(i - 3))) {
+                                    tt.setBet1(ZHUANG_YIN);
+                                } else {
+                                    tt.setBet1(XIAN_YIN);
+                                }
+                            } else {
+                                //非第一行，看有无和直落
+                                if (sourceList.get(i - 2).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 2).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                            }
+                            xiaoluList.add(tt);
+                        }
+                    }
+                }
+            }
         }
+        //大眼数据准备完毕，接下来要和大路做同样的算法
+
+
+        boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
+        ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
+
+        for (int i = 0; i < 30; i++) {
+            ArrayList<Tiny2> tempList = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                Tiny2 tt = new Tiny2();
+                tt.setBet1(NONE_VALUE);
+                tt.setHeAmount(0);
+                tt.setHePre(false);
+                tt.setHeAft(false);
+                tempList.add(tt);
+            }
+            list.add(tempList);
+        }
+
+
+        int lie = 0;
+        int hang = 0;
+        int realHang = 0;
+
+
+        for (int i = 0; i < xiaoluList.size(); i++) {
+            String bet1 = xiaoluList.get(i).getBet1();
+            if (i == 0) { //第0个，做特殊判断
+                lie = 0;
+                hang = 0;
+                realHang = 0;
+
+                if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHePre(true);
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                } else if (bet1.equals(ZHUANG_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                }
+            } else {
+                Tiny2 pre = list.get(hang).get(lie);
+                if (bet1.equals(ZHUANG_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(XIAN_YIN);
+                } else if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                    list.get(hang).get(lie).setHeAft(true);
+                }
+            }
+        }
+
+        xiaoluAdapter = new XiaoluAdapter(MainActivity.this, list);
+        recyclerXiaolu.setAdapter(xiaoluAdapter);
+
 
     }
 
 
-    private void initMap1() {
-        int listListSize;
-        if (tinyList.size() % 6 == 0) {
-            listListSize = tinyList.size() / 6;
-        } else {
-            listListSize = tinyList.size() / 6 + 1;
-        }
+    private void initXiaoqiang(ArrayList<ArrayList<Tiny2>> sourceList) {
+        ArrayList<Tiny> xiaoqiangList = new ArrayList<>();
 
-        ArrayList<ArrayList<Tiny>> list = new ArrayList<>();
-        for (int i = 0; i < listListSize; i++) {
-            ArrayList<Tiny> one = new ArrayList<>();
-            for (int j = 0; j < 6; j++) {
-                int index = i * 6 + j;
-                if (index < tinyList.size()) {
-                    Tiny ti = tinyList.get(i * 6 + j);
+        for (int i = 0; i < 30; i++) { // i表示行
+            for (int j = 0; j < 30; j++) { //j表示列
+                //第0和1列忽略不计
+                if (i > 2) {
+                    if (i == 3) {
+                        //说明三行二列有值，开始些大眼仔路
+                        if (j > 0) {
+                            if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                                Tiny tt = new Tiny();
+                                if (sourceList.get(i - 3).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 3).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                                xiaoqiangList.add(tt);
+                            }
+                        }
 
-                    one.add(ti);
+                    } else {
+                        if (!sourceList.get(i).get(j).getBet1().equals(NONE_VALUE)) {
+                            Tiny tt = new Tiny();
+                            if (j == 0) {
+                                //第一行，看前面两列的和对比
+                                if (getLieAmount(sourceList.get(i - 1)) == getLieAmount(sourceList.get(i - 4))) {
+                                    tt.setBet1(ZHUANG_YIN);
+                                } else {
+                                    tt.setBet1(XIAN_YIN);
+                                }
+                            } else {
+                                //非第一行，看有无和直落
+                                if (sourceList.get(i - 3).get(j).getBet1().equals(NONE_VALUE)) {
+                                    //说明左边一格没有值，则第一个大眼仔为蓝色
+                                    if (sourceList.get(i - 3).get(j - 1).getBet1().equals(NONE_VALUE)) {
+                                        tt.setBet1(ZHUANG_YIN); //说明是直落，
+                                    } else {
+                                        tt.setBet1(XIAN_YIN);   //给直落，无
+                                    }
+                                } else {
+                                    tt.setBet1(ZHUANG_YIN); //有
+                                }
+                            }
+                            xiaoqiangList.add(tt);
+                        }
+                    }
                 }
             }
-            list.add(one);
+        }
+        //大眼数据准备完毕，接下来要和大路做同样的算法
+
+
+        boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
+        ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
+
+        for (int i = 0; i < 30; i++) {
+            ArrayList<Tiny2> tempList = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                Tiny2 tt = new Tiny2();
+                tt.setBet1(NONE_VALUE);
+                tt.setHeAmount(0);
+                tt.setHePre(false);
+                tt.setHeAft(false);
+                tempList.add(tt);
+            }
+            list.add(tempList);
         }
 
-        mainAdapter = new MainAdapter(MainActivity.this, list);
-        recyclerView.setAdapter(mainAdapter);
+
+        int lie = 0;
+        int hang = 0;
+        int realHang = 0;
+
+
+        for (int i = 0; i < xiaoqiangList.size(); i++) {
+            String bet1 = xiaoqiangList.get(i).getBet1();
+            if (i == 0) { //第0个，做特殊判断
+                lie = 0;
+                hang = 0;
+                realHang = 0;
+
+                if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHePre(true);
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                } else if (bet1.equals(ZHUANG_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    list.get(hang).get(lie).setBet1(bet1);
+                }
+            } else {
+                Tiny2 pre = list.get(hang).get(lie);
+                if (bet1.equals(ZHUANG_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                } else if (bet1.equals(XIAN_YIN)) {
+                    if (pre.getBet1().equals(ZHUANG_YIN)) {
+                        lie = 0;
+                        realHang++;
+                        hang = realHang;
+                        tongSeshuxiang = true;
+                    } else if (pre.getBet1().equals(XIAN_YIN)) {
+                        if (lie < 5) {
+                            if (list.get(hang).get(lie + 1).getBet1().equals(ZHUANG_YIN)
+                                    || list.get(hang).get(lie + 1).getBet1().equals(XIAN_YIN)
+                                    || !tongSeshuxiang) {
+                                hang++;
+                                tongSeshuxiang = false;
+                                if (lie == 0) {
+                                    realHang = hang;
+                                }
+
+                            } else {
+                                lie++;
+                                tongSeshuxiang = true;
+                            }
+                        } else {
+                            hang++;
+                            tongSeshuxiang = false;
+                        }
+                    } else if (pre.getBet1().equals(HE)) {
+                        //此种情况只有第一行第一列是和才会产生
+                    }
+                    list.get(hang).get(lie).setBet1(XIAN_YIN);
+                } else if (bet1.equals(HE)) {
+                    list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
+                    list.get(hang).get(lie).setHeAft(true);
+                }
+            }
+        }
+
+        xiaoqiangAdapter = new XiaoqiangAdapter(MainActivity.this, list);
+        recyclerXiaoqiang.setAdapter(xiaoqiangAdapter);
+
+
+    }
+
+    private int getLieAmount(ArrayList<Tiny2> list) {
+        int amount = 0;
+        for (Tiny2 tn : list) {
+            if (!tn.getBet1().equals(NONE_VALUE)) {
+                amount++;
+            }
+        }
+        return amount;
     }
 
     public String getJson(String fileName, Context context) {
