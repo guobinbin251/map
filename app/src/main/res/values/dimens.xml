@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="common_big">20dp</dimen>
+    <dimen name="common_small">10dp</dimen>
+</resources>

@@ -51,6 +51,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
 
     class Vh extends RecyclerView.ViewHolder {
         ImageView[] ivBetArr;
+        ImageView[] ivZhuangDui;
+        ImageView[] ivXianDui;
 
         public Vh(View itemView) {
             super(itemView);
@@ -61,6 +63,23 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
             ivBetArr[3] = (ImageView) itemView.findViewById(R.id.iv_result4);
             ivBetArr[4] = (ImageView) itemView.findViewById(R.id.iv_result5);
             ivBetArr[5] = (ImageView) itemView.findViewById(R.id.iv_result6);
+
+            ivZhuangDui = new ImageView[6];
+            ivZhuangDui[0] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_1);
+            ivZhuangDui[1] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_2);
+            ivZhuangDui[2] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_3);
+            ivZhuangDui[3] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_4);
+            ivZhuangDui[4] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_5);
+            ivZhuangDui[5] = (ImageView) itemView.findViewById(R.id.iv_zhuangdui_6);
+
+            ivXianDui = new ImageView[6];
+            ivXianDui[0] = (ImageView) itemView.findViewById(R.id.iv_xiandui_1);
+            ivXianDui[1] = (ImageView) itemView.findViewById(R.id.iv_xiandui_2);
+            ivXianDui[2] = (ImageView) itemView.findViewById(R.id.iv_xiandui_3);
+            ivXianDui[3] = (ImageView) itemView.findViewById(R.id.iv_xiandui_4);
+            ivXianDui[4] = (ImageView) itemView.findViewById(R.id.iv_xiandui_5);
+            ivXianDui[5] = (ImageView) itemView.findViewById(R.id.iv_xiandui_6);
+
         }
 
         void setData(ArrayList<Tiny> tiny) {
@@ -78,17 +97,42 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
                                 ivBetArr[i].setImageResource(R.mipmap.tie);
                                 break;
                         }
+
+                        if(tiny.get(i).getBet2().equals("1")){
+                            ivZhuangDui[i].setVisibility(View.VISIBLE);
+                        }else{
+                            ivZhuangDui[i].setVisibility(View.GONE);
+                        }
+
+                        if(tiny.get(i).getBet3().equals("1")){
+                            ivXianDui[i].setVisibility(View.VISIBLE);
+                        }else{
+                            ivXianDui[i].setVisibility(View.GONE);
+                        }
+
                     } else {
                         ivBetArr[i].setImageDrawable(null);
+                        ivZhuangDui[i].setVisibility(View.GONE);
+                        ivXianDui[i].setVisibility(View.GONE);
                     }
+
+
+
+
 
                 }
             } else {
                 for (int i = 0; i < 6; i++) {
                     ivBetArr[i].setImageDrawable(null);
+                    ivZhuangDui[i].setVisibility(View.GONE);
+                    ivXianDui[i].setVisibility(View.GONE);
                 }
             }
 
         }
+    }
+    public void update(ArrayList<ArrayList<Tiny>> tinyList){
+        mTinyList = tinyList;
+        notifyDataSetChanged();
     }
 }

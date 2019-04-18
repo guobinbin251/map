@@ -6,33 +6,33 @@
     android:orientation="vertical">
     <RelativeLayout
         android:id="@+id/rl_result1"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_aft"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@color/green"
             android:textSize="12sp"
@@ -41,33 +41,33 @@
 
     <RelativeLayout
         android:id="@+id/rl_result2"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet2"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre2"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft2"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_aft"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_2"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@color/green"
             android:textSize="12sp"
@@ -76,33 +76,33 @@
 
     <RelativeLayout
         android:id="@+id/rl_result3"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet3"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre3"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft3"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_aft"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_3"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@color/green"
             android:textSize="12sp"
@@ -112,33 +112,33 @@
 
     <RelativeLayout
         android:id="@+id/rl_result4"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet4"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre4"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft4"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_aft"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_4"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@color/green"
             android:textSize="12sp"
@@ -147,33 +147,33 @@
 
     <RelativeLayout
         android:id="@+id/rl_result5"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet5"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre5"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft5"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_aft"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_5"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@color/green"
             android:textSize="12sp"
@@ -183,33 +183,33 @@
 
     <RelativeLayout
         android:id="@+id/rl_result6"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/common_big"
+        android:layout_height="@dimen/common_big"
         android:background="@drawable/border_left_top"
         android:padding="1px">
         <ImageView
             android:id="@+id/iv_bet6"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
             android:padding="1px"/>
         <ImageView
             android:id="@+id/iv_he_pre6"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:src="@mipmap/dl_pre"
             android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_he_aft6"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="1px"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_he_6"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:src="@mipmap/dl_aft"
             android:textColor="@color/green"
