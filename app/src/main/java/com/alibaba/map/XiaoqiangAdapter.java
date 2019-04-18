@@ -67,7 +67,7 @@ public class XiaoqiangAdapter extends RecyclerView.Adapter<XiaoqiangAdapter.Vh> 
         void setData(ArrayList<Tiny2> tiny) {
             if (tiny != null) {
                 for (int i = 0; i < 6; i++) {
-                    if (i < tiny.size()) {
+                    if (i < tiny.size() && !tiny.get(i).isAsk()) {
                         switch (tiny.get(i).getBet1()) {
                             case MainActivity.ZHUANG_YIN:
                                 ivBetArr[i].setImageResource(R.mipmap.gaza_red);

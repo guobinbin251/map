@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -39,9 +40,20 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerXiaoqiang;
     XiaoqiangAdapter xiaoqiangAdapter;
 
+    ImageView ivAsk1;
+    ImageView ivAsk2;
+    ImageView ivAsk3;
+    ImageView ivAsk4;
+    ImageView ivAsk5;
+    ImageView ivAsk6;
+
     private String bet1 = "1";
     private String zhuangdui = "0";
     private String xiandui = "1";
+
+    private String askZhuangDayan = "0";
+    private String askZhuangXiaolu = "0";
+    private String askZhuangXiaoqiang = "0";
 
     ArrayList<Tiny> tinyList = new ArrayList<>();
 
@@ -54,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        ivAsk1 = findViewById(R.id.iv_ask1);
+        ivAsk2 = findViewById(R.id.iv_ask2);
+        ivAsk3 = findViewById(R.id.iv_ask3);
+        ivAsk4 = findViewById(R.id.iv_ask4);
+        ivAsk5 = findViewById(R.id.iv_ask5);
+        ivAsk6 = findViewById(R.id.iv_ask6);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView = findViewById(R.id.recycler_main);
@@ -146,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         int sourceHang = 0;
 
         for (int i = 0; i < tinyList.size(); i++) {
+            boolean isAsk = tinyList.get(i).isAsk();
             String bet1 = tinyList.get(i).getBet1();
             if (i == 0) { //第0个，做特殊判断
                 lie = 0;
@@ -154,16 +174,19 @@ public class MainActivity extends AppCompatActivity {
 
                 sourceLie = 0;
                 sourceHang = 0;
-
                 if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHePre(true);
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                 } else if (bet1.equals(ZHUANG_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                     sourceList.get(sourceHang).get(sourceLie).setBet1(bet1);
+                    sourceList.get(sourceHang).get(sourceLie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                     sourceList.get(sourceHang).get(sourceLie).setBet1(bet1);
+                    sourceList.get(sourceHang).get(sourceLie).setAsk(isAsk);
                 }
             } else {
                 Tiny2 pre = list.get(hang).get(lie);
@@ -199,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                     sourceList.get(sourceHang).get(sourceLie).setBet1(ZHUANG_YIN);
+                    sourceList.get(sourceHang).get(sourceLie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         lie = 0;
@@ -231,7 +256,10 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(XIAN_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                     sourceList.get(sourceHang).get(sourceLie).setBet1(XIAN_YIN);
+                    sourceList.get(sourceHang).get(sourceLie).setAsk(isAsk);
+
                 } else if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                     list.get(hang).get(lie).setHeAft(true);
@@ -305,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
+                                tt.setAsk(sourceList.get(i).get(j).isAsk());
                                 dayanList.add(tt);
                             }
                         }
@@ -332,15 +361,22 @@ public class MainActivity extends AppCompatActivity {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
                             }
+                            tt.setAsk(sourceList.get(i).get(j).isAsk());
                             dayanList.add(tt);
                         }
                     }
                 }
             }
         }
+
+        //此处顺便做好问路的预测
+        for (Tiny ti : dayanList) {
+            if (ti.isAsk()) {
+                askZhuangDayan = ti.getBet1();
+            }
+        }
+
         //大眼数据准备完毕，接下来要和大路做同样的算法
-
-
         boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
         ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
 
@@ -365,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < dayanList.size(); i++) {
             String bet1 = dayanList.get(i).getBet1();
+            boolean isAsk = dayanList.get(i).isAsk();
             if (i == 0) { //第0个，做特殊判断
                 lie = 0;
                 hang = 0;
@@ -375,8 +412,10 @@ public class MainActivity extends AppCompatActivity {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                 } else if (bet1.equals(ZHUANG_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 }
             } else {
                 Tiny2 pre = list.get(hang).get(lie);
@@ -408,6 +447,7 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         lie = 0;
@@ -437,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(XIAN_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                     list.get(hang).get(lie).setHeAft(true);
@@ -472,6 +513,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
+                                tt.setAsk(sourceList.get(i).get(j).isAsk());
                                 xiaoluList.add(tt);
                             }
                         }
@@ -499,13 +541,23 @@ public class MainActivity extends AppCompatActivity {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
                             }
+                            tt.setAsk(sourceList.get(i).get(j).isAsk());
                             xiaoluList.add(tt);
                         }
                     }
                 }
             }
         }
-        //大眼数据准备完毕，接下来要和大路做同样的算法
+
+
+        //此处顺便做好问路的预测
+        for (Tiny ti : xiaoluList) {
+            if (ti.isAsk()) {
+                askZhuangXiaolu = ti.getBet1();
+            }
+        }
+
+        //数据准备完毕，接下来要和大路做同样的算法
 
 
         boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
@@ -532,6 +584,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < xiaoluList.size(); i++) {
             String bet1 = xiaoluList.get(i).getBet1();
+            boolean isAsk = xiaoluList.get(i).isAsk();
             if (i == 0) { //第0个，做特殊判断
                 lie = 0;
                 hang = 0;
@@ -542,8 +595,10 @@ public class MainActivity extends AppCompatActivity {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                 } else if (bet1.equals(ZHUANG_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 }
             } else {
                 Tiny2 pre = list.get(hang).get(lie);
@@ -575,6 +630,7 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         lie = 0;
@@ -604,6 +660,7 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(XIAN_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                     list.get(hang).get(lie).setHeAft(true);
@@ -640,6 +697,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
+                                tt.setAsk(sourceList.get(i).get(j).isAsk());
                                 xiaoqiangList.add(tt);
                             }
                         }
@@ -667,12 +725,22 @@ public class MainActivity extends AppCompatActivity {
                                     tt.setBet1(ZHUANG_YIN); //有
                                 }
                             }
+                            tt.setAsk(sourceList.get(i).get(j).isAsk());
                             xiaoqiangList.add(tt);
                         }
                     }
                 }
             }
         }
+
+        //此处顺便做好问路的预测
+        for (Tiny ti : xiaoqiangList) {
+            if (ti.isAsk()) {
+                askZhuangXiaoqiang = ti.getBet1();
+            }
+        }
+
+
         //大眼数据准备完毕，接下来要和大路做同样的算法
 
 
@@ -700,6 +768,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < xiaoqiangList.size(); i++) {
             String bet1 = xiaoqiangList.get(i).getBet1();
+            boolean isAsk = xiaoqiangList.get(i).isAsk();
             if (i == 0) { //第0个，做特殊判断
                 lie = 0;
                 hang = 0;
@@ -710,8 +779,10 @@ public class MainActivity extends AppCompatActivity {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                 } else if (bet1.equals(ZHUANG_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     list.get(hang).get(lie).setBet1(bet1);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 }
             } else {
                 Tiny2 pre = list.get(hang).get(lie);
@@ -743,6 +814,7 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(ZHUANG_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(XIAN_YIN)) {
                     if (pre.getBet1().equals(ZHUANG_YIN)) {
                         lie = 0;
@@ -772,17 +844,15 @@ public class MainActivity extends AppCompatActivity {
                         //此种情况只有第一行第一列是和才会产生
                     }
                     list.get(hang).get(lie).setBet1(XIAN_YIN);
+                    list.get(hang).get(lie).setAsk(isAsk);
                 } else if (bet1.equals(HE)) {
                     list.get(hang).get(lie).setHeAmount(list.get(hang).get(lie).getHeAmount() + 1);
                     list.get(hang).get(lie).setHeAft(true);
                 }
             }
         }
-
         xiaoqiangAdapter = new XiaoqiangAdapter(MainActivity.this, list);
         recyclerXiaoqiang.setAdapter(xiaoqiangAdapter);
-
-
     }
 
     private int getLieAmount(ArrayList<Tiny2> list) {
@@ -837,7 +907,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             zhuangdui = "0";
         }
-
     }
 
     public void xiandui(View view) {
@@ -859,22 +928,80 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshAllList() {
         //先清除掉问路的数据
+        askZhuangDayan = "0";
+        askZhuangXiaolu = "0";
+        askZhuangXiaoqiang = "0";
+
+
         int index = -1;
         for (int i = 0; i < tinyList.size(); i++) {
             if (tinyList.get(i).isAsk()) {
                 index = i;
             }
         }
-        tinyList.remove(index);
+        if (index >= 0) {
+            tinyList.remove(index);
+        }
+
 
         //新增一个问路数据
         Tiny askTiny = new Tiny();
         askTiny.setAsk(true);
         askTiny.setBet1(ZHUANG_YIN);
-
+        askTiny.setBet2(NONE_VALUE);
+        askTiny.setBet3(NONE_VALUE);
+        tinyList.add(askTiny);
 
         initMap1();
         initMap2();
+
+        if (askZhuangDayan.equals("1")) {
+            ivAsk1.setImageResource(R.mipmap.dl_red);
+            ivAsk4.setImageResource(R.mipmap.dl_blue);
+            ivAsk1.setVisibility(View.VISIBLE);
+            ivAsk4.setVisibility(View.VISIBLE);
+        } else if (askZhuangDayan.equals("2")) {
+            ivAsk1.setImageResource(R.mipmap.dl_blue);
+            ivAsk4.setImageResource(R.mipmap.dl_red);
+            ivAsk1.setVisibility(View.VISIBLE);
+            ivAsk4.setVisibility(View.VISIBLE);
+        } else {
+            ivAsk1.setVisibility(View.INVISIBLE);
+            ivAsk4.setVisibility(View.INVISIBLE);
+        }
+
+
+        if (askZhuangXiaolu.equals("1")) {
+            ivAsk2.setImageResource(R.mipmap.banker1);
+            ivAsk5.setImageResource(R.mipmap.player1);
+            ivAsk2.setVisibility(View.VISIBLE);
+            ivAsk5.setVisibility(View.VISIBLE);
+        } else if (askZhuangXiaolu.equals("2")) {
+            ivAsk2.setImageResource(R.mipmap.player1);
+            ivAsk5.setImageResource(R.mipmap.banker1);
+            ivAsk2.setVisibility(View.VISIBLE);
+            ivAsk5.setVisibility(View.VISIBLE);
+        } else {
+            ivAsk2.setVisibility(View.INVISIBLE);
+            ivAsk5.setVisibility(View.INVISIBLE);
+        }
+
+
+        if (askZhuangXiaoqiang.equals("1")) {
+            ivAsk3.setImageResource(R.mipmap.gaza_red);
+            ivAsk6.setImageResource(R.mipmap.gaza_blue);
+            ivAsk3.setVisibility(View.VISIBLE);
+            ivAsk6.setVisibility(View.VISIBLE);
+        } else if (askZhuangXiaoqiang.equals("2")) {
+            ivAsk3.setImageResource(R.mipmap.gaza_blue);
+            ivAsk6.setImageResource(R.mipmap.gaza_red);
+            ivAsk3.setVisibility(View.VISIBLE);
+            ivAsk6.setVisibility(View.VISIBLE);
+        } else {
+            ivAsk3.setVisibility(View.INVISIBLE);
+            ivAsk6.setVisibility(View.INVISIBLE);
+        }
+
 
     }
 

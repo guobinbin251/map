@@ -85,7 +85,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
         void setData(ArrayList<Tiny> tiny) {
             if (tiny != null) {
                 for (int i = 0; i < 6; i++) {
-                    if (i < tiny.size()) {
+                    if (i < tiny.size() && !tiny.get(i).isAsk()) {
                         switch (tiny.get(i).getBet1()) {
                             case "1":
                                 ivBetArr[i].setImageResource(R.mipmap.banker);

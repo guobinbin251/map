@@ -95,7 +95,7 @@ public class DaluAdapter extends RecyclerView.Adapter<DaluAdapter.Vh> {
         void setData(ArrayList<Tiny2> tiny) {
             if (tiny != null) {
                 for (int i = 0; i < 6; i++) {
-                    if (i < tiny.size()) {
+                    if (i < tiny.size() && !tiny.get(i).isAsk()) {
                         switch (tiny.get(i).getBet1()) {
                             case MainActivity.ZHUANG_YIN:
                                 ivBetArr[i].setImageResource(R.mipmap.dl_red);
@@ -107,22 +107,22 @@ public class DaluAdapter extends RecyclerView.Adapter<DaluAdapter.Vh> {
                                 ivBetArr[i].setImageResource(R.mipmap.dl_pre);
                                 break;
                         }
-                        if(tiny.get(i).isHePre()){
+                        if (tiny.get(i).isHePre()) {
                             ivHePre[i].setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             ivHePre[i].setVisibility(View.GONE);
                         }
 
-                        if(tiny.get(i).isHeAft()){
+                        if (tiny.get(i).isHeAft()) {
                             ivHeAft[i].setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             ivHeAft[i].setVisibility(View.GONE);
                         }
 
-                        if(tiny.get(i).getHeAmount()>1){
+                        if (tiny.get(i).getHeAmount() > 1) {
                             tvHe[i].setText(String.valueOf(tiny.get(i).getHeAmount()));
                             tvHe[i].setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             tvHe[i].setText("");
                             tvHe[i].setVisibility(View.GONE);
 

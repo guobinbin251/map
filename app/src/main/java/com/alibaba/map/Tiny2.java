@@ -47,4 +47,12 @@ public class Tiny2 {
     public void setHeAmount(int heAmount) {
         this.heAmount = heAmount;
     }
+
+    public boolean isAsk() {
+        return isAsk;
+    }
+
+    public void setAsk(boolean ask) {
+        isAsk = ask;
+    }
 }
