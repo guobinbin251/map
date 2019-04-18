@@ -6,6 +6,7 @@ public class Tiny2 {
     boolean hePre;
     boolean heAft;
     int heAmount;
+    boolean isAsk;
 
     public String getGid() {
         return gid;

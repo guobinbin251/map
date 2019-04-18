@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerXiaolu.setItemViewCacheSize(50);
 
         LinearLayoutManager linearLayoutManager5 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerXiaoqiang= findViewById(R.id.recycler_xiaoqianglu);
+        recyclerXiaoqiang = findViewById(R.id.recycler_xiaoqianglu);
         recyclerXiaoqiang.setLayoutManager(linearLayoutManager5);
         recyclerXiaoqiang.setItemViewCacheSize(50);
 
@@ -100,16 +100,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        initMap1();
-
-        initMap2();
+        refreshAllList();
 
 
     }
 
     private void initMap2() {
 
-        Log.d("Map","--start------"+System.currentTimeMillis());
+        Log.d("Map", "--start------" + System.currentTimeMillis());
         boolean tongSeshuxiang = true;   //同色竖向，true表示竖向，false表示横向
         ArrayList<ArrayList<Tiny2>> list = new ArrayList<>();
         ArrayList<ArrayList<Tiny2>> sourceList = new ArrayList<>(); //给下三路做数据源用
@@ -220,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (lie == 0) {
                                     realHang = hang;
                                 }
-
                             } else {
                                 lie++;
                                 tongSeshuxiang = true;
@@ -229,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
                             hang++;
                             tongSeshuxiang = false;
                         }
-
                         sourceLie++;
                     } else if (pre.getBet1().equals(HE)) {
                         //此种情况只有第一行第一列是和才会产生
@@ -255,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
         initXiaoqiang(sourceList);
 
-        Log.d("Map","--end------"+System.currentTimeMillis());
+        Log.d("Map", "--end------" + System.currentTimeMillis());
     }
 
 
@@ -862,6 +858,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshAllList() {
+        //先清除掉问路的数据
+        int index = -1;
+        for (int i = 0; i < tinyList.size(); i++) {
+            if (tinyList.get(i).isAsk()) {
+                index = i;
+            }
+        }
+        tinyList.remove(index);
+
+        //新增一个问路数据
+        Tiny askTiny = new Tiny();
+        askTiny.setAsk(true);
+        askTiny.setBet1(ZHUANG_YIN);
+
+
         initMap1();
         initMap2();
 

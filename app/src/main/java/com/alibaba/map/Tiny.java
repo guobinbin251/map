@@ -5,6 +5,7 @@ public class Tiny {
     String bet1;
     String bet2;
     String bet3;
+    boolean isAsk; //是否是问路
 
     public String getGid() {
         return gid;
@@ -36,5 +37,13 @@ public class Tiny {
 
     public void setBet3(String bet3) {
         this.bet3 = bet3;
+    }
+
+    public boolean isAsk() {
+        return isAsk;
+    }
+
+    public void setAsk(boolean ask) {
+        isAsk = ask;
     }
 }
