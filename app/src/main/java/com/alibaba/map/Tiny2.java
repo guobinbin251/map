@@ -6,7 +6,7 @@ public class Tiny2 {
     boolean hePre;
     boolean heAft;
     int heAmount;
-    boolean isAsk;
+    int askType; //问路的类型，0非问路，1模拟庄问路不显示，2真实问路，闪烁显示
 
     public String getGid() {
         return gid;
@@ -48,11 +48,11 @@ public class Tiny2 {
         this.heAmount = heAmount;
     }
 
-    public boolean isAsk() {
-        return isAsk;
+    public int getAskType() {
+        return askType;
     }
 
-    public void setAsk(boolean ask) {
-        isAsk = ask;
+    public void setAskType(int askType) {
+        this.askType = askType;
     }
 }

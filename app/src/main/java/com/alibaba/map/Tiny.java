@@ -5,7 +5,7 @@ public class Tiny {
     String bet1;
     String bet2;
     String bet3;
-    boolean isAsk; //是否是问路
+    int askType; //问路的类型，0非问路，1模拟庄问路不显示，2真实问路，闪烁显示
 
     public String getGid() {
         return gid;
@@ -39,11 +39,11 @@ public class Tiny {
         this.bet3 = bet3;
     }
 
-    public boolean isAsk() {
-        return isAsk;
+    public int getAskType() {
+        return askType;
     }
 
-    public void setAsk(boolean ask) {
-        isAsk = ask;
+    public void setAskType(int askType) {
+        this.askType = askType;
     }
 }

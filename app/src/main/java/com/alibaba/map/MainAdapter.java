@@ -6,6 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -85,39 +88,56 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
         void setData(ArrayList<Tiny> tiny) {
             if (tiny != null) {
                 for (int i = 0; i < 6; i++) {
-                    if (i < tiny.size() && !tiny.get(i).isAsk()) {
-                        switch (tiny.get(i).getBet1()) {
-                            case "1":
-                                ivBetArr[i].setImageResource(R.mipmap.banker);
-                                break;
-                            case "2":
-                                ivBetArr[i].setImageResource(R.mipmap.player);
-                                break;
-                            case "3":
-                                ivBetArr[i].setImageResource(R.mipmap.tie);
-                                break;
-                        }
+                    if (i < tiny.size()) {
 
-                        if(tiny.get(i).getBet2().equals("1")){
-                            ivZhuangDui[i].setVisibility(View.VISIBLE);
-                        }else{
+                        if (tiny.get(i).getAskType() == MainActivity.ASK_NONE) {
+
+                            switch (tiny.get(i).getBet1()) {
+                                case "1":
+                                    ivBetArr[i].setImageResource(R.mipmap.banker);
+                                    break;
+                                case "2":
+                                    ivBetArr[i].setImageResource(R.mipmap.player);
+                                    break;
+                                case "3":
+                                    ivBetArr[i].setImageResource(R.mipmap.tie);
+                                    break;
+                            }
+
+                            if (tiny.get(i).getBet2().equals("1")) {
+                                ivZhuangDui[i].setVisibility(View.VISIBLE);
+                            } else {
+                                ivZhuangDui[i].setVisibility(View.GONE);
+                            }
+
+                            if (tiny.get(i).getBet3().equals("1")) {
+                                ivXianDui[i].setVisibility(View.VISIBLE);
+                            } else {
+                                ivXianDui[i].setVisibility(View.GONE);
+                            }
+
+                        } else if (tiny.get(i).getAskType() == MainActivity.ASK_DEMO) {
+                            ivBetArr[i].setImageDrawable(null);
                             ivZhuangDui[i].setVisibility(View.GONE);
+                            ivXianDui[i].setVisibility(View.GONE);
+                        } else {
+                            switch (tiny.get(i).getBet1()) {
+                                case "1":
+                                    ivBetArr[i].setImageResource(R.mipmap.banker);
+                                    break;
+                                case "2":
+                                    ivBetArr[i].setImageResource(R.mipmap.player);
+                                    break;
+                            }
+                            setFlickerAnimation(ivBetArr[i]);
                         }
 
-                        if(tiny.get(i).getBet3().equals("1")){
-                            ivXianDui[i].setVisibility(View.VISIBLE);
-                        }else{
-                            ivXianDui[i].setVisibility(View.GONE);
-                        }
 
                     } else {
                         ivBetArr[i].setImageDrawable(null);
                         ivZhuangDui[i].setVisibility(View.GONE);
                         ivXianDui[i].setVisibility(View.GONE);
                     }
-
-
-
 
 
                 }
@@ -131,8 +151,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.Vh> {
 
         }
     }
-    public void update(ArrayList<ArrayList<Tiny>> tinyList){
+
+    public void update(ArrayList<ArrayList<Tiny>> tinyList) {
         mTinyList = tinyList;
         notifyDataSetChanged();
+    }
+
+
+
+    private void setFlickerAnimation(ImageView imgv) {
+        final Animation animation = new AlphaAnimation(1, 0);
+        animation.setDuration(750);//闪烁时间间隔
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+        imgv.setAnimation(animation);
     }
 }

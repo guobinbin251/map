@@ -6,6 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,18 +71,36 @@ public class DayanzaiAdapter extends RecyclerView.Adapter<DayanzaiAdapter.Vh> {
         void setData(ArrayList<Tiny2> tiny) {
             if (tiny != null) {
                 for (int i = 0; i < 6; i++) {
-                    if (i < tiny.size() && !tiny.get(i).isAsk()) {
-                        switch (tiny.get(i).getBet1()) {
-                            case MainActivity.ZHUANG_YIN:
-                                ivBetArr[i].setImageResource(R.mipmap.dl_red);
-                                break;
-                            case MainActivity.XIAN_YIN:
-                                ivBetArr[i].setImageResource(R.mipmap.dl_blue);
-                                break;
-                            case MainActivity.HE:
-                                ivBetArr[i].setImageResource(R.mipmap.dl_pre);
-                                break;
+                    if (i < tiny.size()) {
+                        if (tiny.get(i).getAskType() == MainActivity.ASK_NONE) {
+                            switch (tiny.get(i).getBet1()) {
+                                case MainActivity.ZHUANG_YIN:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_red);
+                                    break;
+                                case MainActivity.XIAN_YIN:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_blue);
+                                    break;
+                                case MainActivity.HE:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_pre);
+                                    break;
+                            }
+                        } else if (tiny.get(i).getAskType() == MainActivity.ASK_DEMO) {
+                            ivBetArr[i].setImageDrawable(null);
+                        } else {
+                            switch (tiny.get(i).getBet1()) {
+                                case MainActivity.ZHUANG_YIN:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_red);
+                                    break;
+                                case MainActivity.XIAN_YIN:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_blue);
+                                    break;
+                                case MainActivity.HE:
+                                    ivBetArr[i].setImageResource(R.mipmap.dl_pre);
+                                    break;
+                            }
+                            setFlickerAnimation(ivBetArr[i]);
                         }
+
                     } else {
                         ivBetArr[i].setImageDrawable(null);
                     }
@@ -92,5 +113,14 @@ public class DayanzaiAdapter extends RecyclerView.Adapter<DayanzaiAdapter.Vh> {
             }
 
         }
+    }
+
+    private void setFlickerAnimation(ImageView imgv) {
+        final Animation animation = new AlphaAnimation(1, 0);
+        animation.setDuration(750);//闪烁时间间隔
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+        imgv.setAnimation(animation);
     }
 }
